@@ -1,4 +1,5 @@
-import { Fragment, useEffect, useState } from "react"
+import { Fragment, useEffect, useRef, useState } from "react"
+import SavePassword from "../save-password/save-password.component";
 
 
 const Section =()=>{
@@ -6,6 +7,13 @@ const Section =()=>{
     const str=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
     const strGen=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
     const symbol=['!','@','#','$','%','^','&','*','_','-','+','='];
+    let list=[];
+
+    const checkNum=useRef();
+    const checkStr=useRef();
+    const checkStrGen=useRef();
+    const checkSym=useRef();
+
 
     const [inputValue,setInputValue]=useState("");
     const [passwordList,setPasswordList]=useState(()=>{
@@ -20,13 +28,28 @@ const Section =()=>{
 
     const generatePassword=()=>{
         console.log('password generate');
-        handleChanceValue(Math.random);
-        
+        handleChanceValue('deneme');
+        const checkEt= [checkNum, checkStr,checkStrGen,checkSym]
+        .filter(ref=>{
+            if(ref.current.checked === true ){
+                list = list.concat(ref.current.value);
+                return true
+            }else{
+                return false;
+            }
+        });
+        console.log(list);
+        const liste=[...checkNum.current.value];
+        console.log(liste);
     }
     const handleChanceValue=(e)=>{
         setInputValue(e);
     }
     
+    // const savePassword=()=>{
+        
+    // }
+
     useEffect(()=>{
         if(inputValue){
             localStorage.setItem('passwordList',JSON.stringify(inputValue));
@@ -56,19 +79,19 @@ const Section =()=>{
                         <div className="checbox-page">
                             <div className="checkox-buttons grid grid-cols-2 gap-3">
                                 <div>
-                                    <input type="checkbox" value={number}/>
+                                    <input type="checkbox" ref={checkNum} value={number} key='numInput'/>
                                     <label>Numbers [ 1,2,3,... ]</label>
                                 </div>
                                 <div>
-                                    <input type="checkbox" value={str}/>
+                                    <input type="checkbox" ref={checkStr} value={str} key='alphaInput' />
                                     <label>Alpha [ a,b,c,... ]</label>
                                 </div>
                                 <div>
-                                    <input type="checkbox" value={strGen}/>
+                                    <input type="checkbox" ref={checkStrGen} value={strGen} key='alphaGensInput'/>
                                     <label>AlphaGens [ A,B,C,... ]</label>
                                 </div>
                                 <div>
-                                    <input type="checkbox" value={symbol}/>
+                                    <input type="checkbox" ref={checkSym} value={symbol} key='symInput' />
                                     <label>Symbols [ .,?,_,... ]</label>
                                 </div>
                             </div>
@@ -81,8 +104,12 @@ const Section =()=>{
                             </div>
                             <div className="saves-password text-center">
                                 <ul>
-                                    <li>Password 1</li>
-                                    <li>Password 2</li> 
+                                    {/* {passwordList.map((passwordSave)=>(
+                                        <li key={1}>{passwordSave}</li>
+                                    ))} */}
+                                    {/* <li>Password 1</li>
+                                    <li>Password 2</li>  */}
+                                    <SavePassword/>
                                 </ul>
                             </div>
                         </div>
